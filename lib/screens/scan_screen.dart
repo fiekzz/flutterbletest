@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:testble/utils/constants.dart';
 
 import 'device_screen.dart';
 import '../utils/snackbar.dart';
@@ -140,14 +141,32 @@ class _ScanScreenState extends State<ScanScreen> {
   }
 
   List<Widget> _buildScanResultTiles(BuildContext context) {
-    return _scanResults
-        .map(
-          (r) => ScanResultTile(
+    // final item = _scanResults
+    //     .map(
+    //       (r) => ScanResultTile(
+    //         result: r,
+    //         onTap: () => onConnectPressed(r.device),
+    //       ),
+    //     )
+    //     .toList();
+
+    List<ScanResultTile> item = [];
+
+    for (var r in _scanResults) {
+      if (r.device.advName == Constants.teltonikas[0].advName ||
+          r.device.advName == Constants.teltonikas[1].advName) {
+        item.add(
+          ScanResultTile(
             result: r,
             onTap: () => onConnectPressed(r.device),
           ),
-        )
-        .toList();
+        );
+      }
+    }
+
+    return item;
+
+    // return tiles;
   }
 
   @override
