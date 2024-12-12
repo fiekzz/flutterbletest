@@ -65,6 +65,7 @@ class _ScanScreenState extends State<ScanScreen> {
     try {
       await FlutterBluePlus.startScan(
         timeout: const Duration(seconds: 15),
+        androidUsesFineLocation: true,
       );
     } catch (e) {
       Snackbar.show(ABC.b, prettyException("Start Scan Error:", e),
@@ -100,7 +101,10 @@ class _ScanScreenState extends State<ScanScreen> {
 
   Future onRefresh() {
     if (_isScanning == false) {
-      FlutterBluePlus.startScan(timeout: const Duration(seconds: 15));
+      FlutterBluePlus.startScan(
+        timeout: const Duration(seconds: 15),
+        androidUsesFineLocation: true,
+      );
     }
     if (mounted) {
       setState(() {});
