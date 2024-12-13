@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'package:testble/utils/constants.dart';
 
 class ScanResultTile extends StatefulWidget {
   const ScanResultTile({Key? key, required this.result, this.onTap})
@@ -66,20 +67,26 @@ class _ScanResultTileState extends State<ScanResultTile> {
     return _connectionState == BluetoothConnectionState.connected;
   }
 
-  Widget _buildTitle(BuildContext context) {
+  Widget _buildTitle(BuildContext context, Teltonika? device) {
     if (widget.result.device.platformName.isNotEmpty) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-            widget.result.device.platformName,
+            // widget.result.device.platformName,
+            widget.result.device.advName,
             overflow: TextOverflow.ellipsis,
           ),
           Text(
-            widget.result.device.remoteId.str,
+            // widget.result.device.remoteId.str,
+            device?.branch ?? '',
             style: Theme.of(context).textTheme.bodySmall,
-          )
+          ),
+          Text(
+            device?.mac ?? '',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
         ],
       );
     } else {
@@ -127,8 +134,16 @@ class _ScanResultTileState extends State<ScanResultTile> {
   @override
   Widget build(BuildContext context) {
     var adv = widget.result.advertisementData;
+
+    Teltonika? teltonikaBranch;
+
+    teltonikaBranch = Constants.teltonikas.firstWhere(
+      (t) =>
+          t.advName.toUpperCase() == widget.result.device.advName.toUpperCase(),
+    );
+
     return ExpansionTile(
-      title: _buildTitle(context),
+      title: _buildTitle(context, teltonikaBranch),
       leading: Text(widget.result.rssi.toString()),
       trailing: _buildConnectButton(context),
       children: <Widget>[
@@ -137,16 +152,28 @@ class _ScanResultTileState extends State<ScanResultTile> {
           _buildAdvRow(context, 'Tx Power Level', '${adv.txPowerLevel}'),
         if ((adv.appearance ?? 0) > 0)
           _buildAdvRow(
-              context, 'Appearance', '0x${adv.appearance!.toRadixString(16)}'),
+            context,
+            'Appearance',
+            '0x${adv.appearance!.toRadixString(16)}',
+          ),
         if (adv.msd.isNotEmpty)
           _buildAdvRow(
-              context, 'Manufacturer Data', getNiceManufacturerData(adv.msd)),
+            context,
+            'Manufacturer Data',
+            getNiceManufacturerData(adv.msd),
+          ),
         if (adv.serviceUuids.isNotEmpty)
           _buildAdvRow(
-              context, 'Service UUIDs', getNiceServiceUuids(adv.serviceUuids)),
+            context,
+            'Service UUIDs',
+            getNiceServiceUuids(adv.serviceUuids),
+          ),
         if (adv.serviceData.isNotEmpty)
           _buildAdvRow(
-              context, 'Service Data', getNiceServiceData(adv.serviceData)),
+            context,
+            'Service Data',
+            getNiceServiceData(adv.serviceData),
+          ),
       ],
     );
   }
