@@ -144,16 +144,8 @@ class _ScanScreenState extends State<ScanScreen> {
         .toList();
   }
 
+  // TODO: Add a filter for the scan results
   List<Widget> _buildScanResultTiles(BuildContext context) {
-    // final item = _scanResults
-    //     .map(
-    //       (r) => ScanResultTile(
-    //         result: r,
-    //         onTap: () => onConnectPressed(r.device),
-    //       ),
-    //     )
-    //     .toList();
-
     List<ScanResultTile> item = [];
 
     for (var r in _scanResults) {
